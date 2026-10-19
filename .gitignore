@@ -1,0 +1,8 @@
+.env
+.venv/
+.venv_old/
+__pycache__/
+.adk/
+reports/
+.DS_Store
+.idea/
