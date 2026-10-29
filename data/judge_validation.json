@@ -1,0 +1,92 @@
+[
+  {
+    "id": "confirmed_drain_cleaning",
+    "transcript": "Customer: My kitchen drain is blocked. Agent: We have Wednesday at 11 AM available. Customer: Please book that slot. Agent: Your drain cleaning visit is confirmed for Wednesday at 11 AM.",
+    "analysis": {
+      "reason": "Blocked kitchen drain.",
+      "appointment_booked": true,
+      "evidence": "Your drain cleaning visit is confirmed for Wednesday at 11 AM.",
+      "summary": "The customer reported a blocked kitchen drain and accepted a Wednesday visit at 11 AM. The agent confirmed the booking."
+    },
+    "expected_evaluation": {
+      "booking_correct": true,
+      "evidence_supports_booking": true,
+      "summary_grounded": true
+    }
+  },
+  {
+    "id": "customer_declines_slot",
+    "transcript": "Customer: I need my gutters cleaned. Agent: We can come Thursday at 9 AM. Customer: That does not work for me. Please do not book it. Agent: Understood. I have not scheduled a visit.",
+    "analysis": {
+      "reason": "Gutter cleaning request.",
+      "appointment_booked": false,
+      "evidence": "I have not scheduled a visit.",
+      "summary": "The customer requested gutter cleaning but declined the offered Thursday slot. No visit was scheduled."
+    },
+    "expected_evaluation": {
+      "booking_correct": true,
+      "evidence_supports_booking": true,
+      "summary_grounded": true
+    }
+  },
+  {
+    "id": "wrong_status_accurate_summary",
+    "transcript": "Customer: Can someone inspect my roof? Agent: I cannot offer a time until our inspector reviews your address. Customer: Okay, contact me when you know. Agent: Nothing is scheduled yet.",
+    "analysis": {
+      "reason": "Roof inspection request.",
+      "appointment_booked": true,
+      "evidence": "Nothing is scheduled yet.",
+      "summary": "The customer requested a roof inspection. The agent could not offer a time before an address review, and no appointment was scheduled."
+    },
+    "expected_evaluation": {
+      "booking_correct": false,
+      "evidence_supports_booking": false,
+      "summary_grounded": true
+    }
+  },
+  {
+    "id": "confirmed_with_unrelated_quote",
+    "transcript": "Customer: My garage door is stuck. Agent: We can send someone Saturday at noon. Customer: Yes, please do. Agent: Your repair visit is booked for Saturday at noon.",
+    "analysis": {
+      "reason": "Stuck garage door.",
+      "appointment_booked": true,
+      "evidence": "My garage door is stuck.",
+      "summary": "The customer requested a garage door repair and agreed to a Saturday visit at noon. The agent confirmed the booking."
+    },
+    "expected_evaluation": {
+      "booking_correct": true,
+      "evidence_supports_booking": false,
+      "summary_grounded": true
+    }
+  },
+  {
+    "id": "invented_warranty",
+    "transcript": "Customer: My dishwasher is leaking. Agent: A technician can visit Tuesday at 4 PM. Customer: That works for me. Agent: Your visit is confirmed for Tuesday at 4 PM.",
+    "analysis": {
+      "reason": "Leaking dishwasher.",
+      "appointment_booked": true,
+      "evidence": "Your visit is confirmed for Tuesday at 4 PM.",
+      "summary": "The customer booked a technician visit for a leaking dishwasher on Tuesday at 4 PM. The agent confirmed that the repair is covered by warranty."
+    },
+    "expected_evaluation": {
+      "booking_correct": true,
+      "evidence_supports_booking": true,
+      "summary_grounded": false
+    }
+  },
+  {
+    "id": "rescheduled_visit",
+    "transcript": "Customer: I have an electrical inspection booked for Monday at 10 AM. Can we move it? Agent: Friday at 1 PM is available. Customer: Yes, move it to Friday at 1 PM. Agent: Your inspection is now confirmed for Friday at 1 PM. The Monday appointment has been removed.",
+    "analysis": {
+      "reason": "Rescheduling an electrical inspection.",
+      "appointment_booked": true,
+      "evidence": "Your inspection is now confirmed for Friday at 1 PM.",
+      "summary": "The customer moved an electrical inspection from Monday at 10 AM to Friday at 1 PM. The agent confirmed the new time and removed the Monday appointment."
+    },
+    "expected_evaluation": {
+      "booking_correct": true,
+      "evidence_supports_booking": true,
+      "summary_grounded": true
+    }
+  }
+]

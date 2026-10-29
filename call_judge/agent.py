@@ -66,44 +66,21 @@ root_agent = LlmAgent(
        Check whether analysis.appointment_booked matches
        the final state of the transcript.
 
-    2. evidence_supports_booking
-       This criterion means: evidence supports the REPORTED
-       booking status, whether that status is true OR false.
-       It does NOT mean evidence must confirm a booking.
-
-       Evaluate analysis.evidence against
-       analysis.appointment_booked:
-
-       - If appointment_booked is true, the quote must support
-         a confirmed appointment.
-       - If appointment_booked is false, the quote must support
-         an unconfirmed, pending, rejected, or cancelled appointment.
-         A statement about checking availability and calling back
-         supports false and MUST be accepted.
-
-       The quote must be an exact, contiguous substring of
-       the transcript. It may omit the speaker label and
-       surrounding text.
-
-       Reject unrelated quotes, such as statements describing
-       broken equipment, even if the booking status is correct.
-
-       Examples:
-       Reported status: false
-       Evidence: "I need to check availability and call you back."
-       Result: true — the appointment is still pending.
-
-       Reported status: true
-       Evidence: "I need to check availability and call you back."
-       Result: false — this does not confirm an appointment.
-
-       Reported status: false
-       Evidence: "My heating system is not working."
-       Result: false — this says nothing about scheduling.
-
-       Empty evidence is acceptable only when the transcript
-       contains no booking-related evidence and the reported
-       status is false.
+    2. evidence_supports_booking:
+        Determine whether analysis.evidence supports the exact value of
+        analysis.appointment_booked.
+        
+        Do not replace the supplied booking status with your own corrected
+        status when evaluating this field.
+        
+        Return false if the evidence contradicts the supplied status or is
+        irrelevant to it.
+        
+        Examples:
+        - appointment_booked=true + "Nothing is scheduled yet." => false
+        - appointment_booked=false + "Nothing is scheduled yet." => true
+        
+        Evaluate summary_grounded independently of the other fields.
 
     3. summary_grounded
        Every factual claim in the summary must be supported
