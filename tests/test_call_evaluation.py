@@ -10,6 +10,7 @@ from google.genai import types
 
 from call_judge.agent import CallEvaluation, root_agent
 from test_call_analyst import analyze_transcript
+from pathlib import Path
 
 
 async def evaluate_analysis(transcript, analysis) -> CallEvaluation:
@@ -185,8 +186,8 @@ class TestCallEvaluation(unittest.IsolatedAsyncioTestCase):
             "Transcript": transcript,
             "Analysis": analysis.model_dump(),
             "Expected evaluation": {
-                "booking_correct": False,
-                "evidence_supports_booking": False,
+                "booking_correct": True,
+                "evidence_supports_booking": True,
                 "summary_grounded": False,
             },
         }
@@ -234,9 +235,9 @@ class TestCallEvaluation(unittest.IsolatedAsyncioTestCase):
             "Transcript": transcript,
             "Analysis": analysis.model_dump(),
             "Expected evaluation": {
-                "booking_correct": False,
+                "booking_correct": True,
                 "evidence_supports_booking": False,
-                "summary_grounded": False,
+                "summary_grounded": True,
             },
         }
 
@@ -285,9 +286,9 @@ class TestCallEvaluation(unittest.IsolatedAsyncioTestCase):
             "Transcript": transcript,
             "Analysis": analysis.model_dump(),
             "Expected evaluation": {
-                "booking_correct": False,
-                "evidence_supports_booking": False,
-                "summary_grounded": False,
+                "booking_correct": True,
+                "evidence_supports_booking": True,
+                "summary_grounded": True,
             },
         }
 
@@ -489,3 +490,61 @@ class TestCallEvaluation(unittest.IsolatedAsyncioTestCase):
             f"Only {matches}/5 evaluations matched expectations. "
             "See Attempts in the report for details.",
         )
+
+    async def test_judge_validation_dataset(self):
+        dataset_path = (
+                Path(__file__).resolve().parents[1]
+                / "data"
+                / "judge_validation.json"
+        )
+
+        cases = json.loads(
+            dataset_path.read_text(encoding="utf-8")
+        )
+        self.assertTrue(cases, "Validation dataset is empty.")
+
+        results = []
+        self.report_data = {
+            "Dataset": dataset_path.name,
+            "Results": results,
+        }
+
+        for case in cases:
+            with self.subTest(case_id=case["id"]):
+                analysis = CallAnalysis.model_validate(
+                    case["analysis"]
+                )
+
+                evaluation = await evaluate_analysis(
+                    case["transcript"],
+                    analysis,
+                )
+
+                expected = case["expected_evaluation"]
+                actual = evaluation.model_dump(
+                    include=set(expected)
+                )
+
+                results.append({
+                    "id": case["id"],
+                    "Transcript": case["transcript"],
+                    "Analysis": analysis.model_dump(),
+                    "Expected evaluation": expected,
+                    "Evaluation": evaluation.model_dump(),
+                    "Matches expected": actual == expected,
+                })
+
+                print(f"\nCase: {case['id']}")
+                print(f"Expected: {expected}")
+                print(f"Actual:   {actual}")
+                print(f"Explanation: {evaluation.explanation}")
+
+                self.assertEqual(
+                    actual,
+                    expected,
+                    (
+                        f"Case: {case['id']}\n"
+                        f"Judge explanation: "
+                        f"{evaluation.explanation}"
+                    ),
+                )
