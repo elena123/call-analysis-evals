@@ -1,6 +1,5 @@
-Call Analysis Evals — Automated Evaluation of LLM Call Analysis.
-
 # Call Analysis Evals
+Automated Evaluation of LLM Call Analysis.
 
 A Python prototype for testing LLM-generated analyses of customer
 service call transcripts.
@@ -38,8 +37,6 @@ Create a `.env` file in the project root:
 OPENAI_API_KEY=your_api_key
 ADK_MODEL=openai/gpt-4.1-mini
 ```
-
-Keep `.env` out of version control.
 
 ## Run tests and reports
 
@@ -106,7 +103,7 @@ The suite covers:
 
 Full-flow tests cover confirmed, pending, and cancelled appointments.
 
-## Judge calibration and repeatability
+## Judge validation and repeatability
 
 During development, the judge incorrectly rejected a valid
 substring quote and confused evidence for an unconfirmed
