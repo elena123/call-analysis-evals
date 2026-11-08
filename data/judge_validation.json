@@ -88,5 +88,35 @@
       "evidence_supports_booking": true,
       "summary_grounded": true
     }
+  },
+  {
+    "id": "visit_pending_schedule_check",
+    "transcript": "Customer: Can someone come tomorrow at 10 AM? Agent: Let me check the technician's schedule and get back to you.",
+    "analysis": {
+      "reason": "Requesting a technician visit.",
+      "appointment_booked": false,
+      "evidence": "Let me check the technician's schedule and get back to you.",
+      "summary": "The customer requested a visit for tomorrow at 10 AM. The agent said they would check the technician's schedule and get back to the customer."
+    },
+    "expected_evaluation": {
+      "booking_correct": true,
+      "evidence_supports_booking": true,
+      "summary_grounded": true
+    }
+  },
+  {
+    "id": "cancelled_visit_confirmation_evidence",
+    "transcript": "Customer: I need an annual boiler inspection. Agent: We can visit Friday at 2 PM. Customer: Yes, please book it. Agent: Your appointment is confirmed. Customer: Actually, please cancel that appointment. Agent: Your Friday appointment has been cancelled.",
+    "analysis": {
+      "reason": "Customer called to schedule an annual boiler inspection.",
+      "appointment_booked": false,
+      "evidence": "Your Friday appointment has been cancelled.",
+      "summary": "Customer requested an annual boiler inspection and initially confirmed an appointment for Friday at 2 PM, but then cancelled it during the same call."
+    },
+    "expected_evaluation": {
+      "booking_correct": true,
+      "evidence_supports_booking": true,
+      "summary_grounded": true
+    }
   }
 ]
