@@ -103,5 +103,20 @@
       "evidence_supports_booking": true,
       "summary_grounded": true
     }
+  },
+  {
+    "id": "cancelled_visit_confirmation_evidence",
+    "transcript": "Customer: I need an annual boiler inspection. Agent: We can visit Friday at 2 PM. Customer: Yes, please book it. Agent: Your appointment is confirmed. Customer: Actually, please cancel that appointment. Agent: Your Friday appointment has been cancelled.",
+    "analysis": {
+      "reason": "Customer called to schedule an annual boiler inspection.",
+      "appointment_booked": false,
+      "evidence": "Your Friday appointment has been cancelled.",
+      "summary": "Customer requested an annual boiler inspection and initially confirmed an appointment for Friday at 2 PM, but then cancelled it during the same call."
+    },
+    "expected_evaluation": {
+      "booking_correct": true,
+      "evidence_supports_booking": true,
+      "summary_grounded": true
+    }
   }
 ]
