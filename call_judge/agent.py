@@ -6,38 +6,27 @@ from google.adk.agents import LlmAgent
 from google.adk.models.lite_llm import LiteLlm
 from pydantic import BaseModel, Field
 
-
 env_path = Path(__file__).resolve().parent.parent / ".env"
 load_dotenv(env_path)
 
 
 class CallEvaluation(BaseModel):
     booking_correct: bool = Field(
-        description="Whether the booking status matches the transcript."
-    )
-    evidence_supports_booking: bool = Field(
-        description=(
-            "Whether the exact transcript quote supports the reported "
-            "appointment_booked value, including false for pending "
-            "or unconfirmed appointments."
-        )
-    )
+        description="Whether the booking status matches the transcript.")
+    evidence_supports_booking: bool = Field(description=(
+        "Whether the exact transcript quote supports the reported "
+        "appointment_booked value, including false for pending "
+        "or unconfirmed appointments."))
     summary_grounded: bool = Field(
-        description=(
-            "Whether all factual claims in the summary "
-            "are supported by the transcript."
-        )
-    )
+        description=("Whether all factual claims in the summary "
+                     "are supported by the transcript."))
     explanation: str = Field(
-        description="A brief explanation identifying any specific errors."
-    )
+        description="A brief explanation identifying any specific errors.")
 
 
 root_agent = LlmAgent(
     name="call_judge",
-    model=LiteLlm(
-        model=os.getenv("ADK_MODEL", "openai/gpt-4.1-mini")
-    ),
+    model=LiteLlm(model=os.getenv("ADK_MODEL", "openai/gpt-4.1-mini")),
     description="Evaluates call analyses against their source transcripts.",
     instruction="""
     Evaluate the supplied evidence itself, not just whether
@@ -66,21 +55,29 @@ root_agent = LlmAgent(
        Check whether analysis.appointment_booked matches
        the final state of the transcript.
 
-    2. evidence_supports_booking:
-        Determine whether analysis.evidence supports the exact value of
-        analysis.appointment_booked.
-        
-        Do not replace the supplied booking status with your own corrected
-        status when evaluating this field.
-        
-        Return false if the evidence contradicts the supplied status or is
-        irrelevant to it.
-        
+    2. evidence_supports_booking
+        Determine whether analysis.evidence supports the supplied value of
+        analysis.appointment_booked as the status at the end of the call.
+        Evaluate the supplied value as written, even if booking_correct is false.
+
+        Return true only if the quote itself provides evidence for that status.
+        Use the transcript to interpret the quote and check whether a later
+        event changes the status. If the support comes entirely from other
+        lines, return false. A quote that is merely consistent with the
+        supplied status is insufficient.
+
+        A quote confirming cancellation supports appointment_booked=false
+        if no later rebooking occurs. An earlier confirmation does not
+        invalidate evidence of a later cancellation.
+
         Examples:
         - appointment_booked=true + "Nothing is scheduled yet." => false
         - appointment_booked=false + "Nothing is scheduled yet." => true
-        
-        Evaluate summary_grounded independently of the other fields.
+
+        When the requested visit is left pending at the end of the call:
+        - appointment_booked=false + "I need to check availability and call you back." => true
+        - appointment_booked=true + "I need to check availability and call you back." => false
+        - appointment_booked=false + "My heating system is not working." => false
 
     3. summary_grounded
        Every factual claim in the summary must be supported

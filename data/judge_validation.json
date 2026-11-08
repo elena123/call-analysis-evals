@@ -88,5 +88,20 @@
       "evidence_supports_booking": true,
       "summary_grounded": true
     }
+  },
+  {
+    "id": "visit_pending_schedule_check",
+    "transcript": "Customer: Can someone come tomorrow at 10 AM? Agent: Let me check the technician's schedule and get back to you.",
+    "analysis": {
+      "reason": "Requesting a technician visit.",
+      "appointment_booked": false,
+      "evidence": "Let me check the technician's schedule and get back to you.",
+      "summary": "The customer requested a visit for tomorrow at 10 AM. The agent said they would check the technician's schedule and get back to the customer."
+    },
+    "expected_evaluation": {
+      "booking_correct": true,
+      "evidence_supports_booking": true,
+      "summary_grounded": true
+    }
   }
 ]
